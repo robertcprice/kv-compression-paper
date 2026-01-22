@@ -1,0 +1,74 @@
+{
+  "model": "distilgpt2",
+  "dataset": "wikitext/wikitext-2-raw-v1",
+  "device": "mps",
+  "max_length": 512,
+  "stages": [
+    {
+      "name": "Baseline (FP32)",
+      "compression_ratio": 1.0,
+      "perplexity": 48.793,
+      "ppl_delta_pct": 0.0,
+      "eval_time_s": 1.89,
+      "config": {
+        "quant": null,
+        "head_reduce": 1.0,
+        "evict": 1.0
+      },
+      "estimated_memory_mb": 108.0
+    },
+    {
+      "name": "INT8 Quantization",
+      "compression_ratio": 4.0,
+      "perplexity": 48.801,
+      "ppl_delta_pct": 0.02,
+      "eval_time_s": 1.38,
+      "config": {
+        "quant": "int8",
+        "head_reduce": 1.0,
+        "evict": 1.0
+      },
+      "estimated_memory_mb": 27.0
+    },
+    {
+      "name": "INT8 + Head Reduction (80%)",
+      "compression_ratio": 5.0,
+      "perplexity": 48.744,
+      "ppl_delta_pct": -0.1,
+      "eval_time_s": 1.35,
+      "config": {
+        "quant": "int8",
+        "head_reduce": 0.8,
+        "evict": 1.0
+      },
+      "estimated_memory_mb": 21.6
+    },
+    {
+      "name": "INT8 + Heads (80%) + Eviction (50%)",
+      "compression_ratio": 10.0,
+      "perplexity": 48.783,
+      "ppl_delta_pct": -0.02,
+      "eval_time_s": 1.46,
+      "config": {
+        "quant": "int8",
+        "head_reduce": 0.8,
+        "evict": 0.5
+      },
+      "estimated_memory_mb": 10.8
+    },
+    {
+      "name": "Full KVRM (INT8 + 80% heads + 13% tokens)",
+      "compression_ratio": 38.46153846153846,
+      "perplexity": 48.739,
+      "ppl_delta_pct": -0.11,
+      "eval_time_s": 1.35,
+      "config": {
+        "quant": "int8",
+        "head_reduce": 0.8,
+        "evict": 0.13
+      },
+      "estimated_memory_mb": 2.8
+    }
+  ],
+  "timestamp": "2026-01-19 12:01:40"
+}

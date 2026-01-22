@@ -1,0 +1,463 @@
+{
+  "longbench": {
+    "metadata": {
+      "context_lengths": [
+        2048,
+        4096,
+        8192,
+        16384
+      ],
+      "n_samples_per_task": 50,
+      "seeds": [
+        42,
+        43,
+        44
+      ],
+      "timestamp": "2026-01-20T18:15:27.999645"
+    },
+    "task_results": [
+      {
+        "task_type": "document_qa",
+        "config_results": [
+          {
+            "config_name": "baseline",
+            "compression_ratio": 1.0,
+            "eviction_ratio": 0.0,
+            "results_by_context": [
+              {
+                "context_length": 2048,
+                "accuracy_mean": 0.9796395026551469,
+                "accuracy_std": 0.0018510061913169162,
+                "n_samples": 150
+              },
+              {
+                "context_length": 4096,
+                "accuracy_mean": 0.9804772084172027,
+                "accuracy_std": 0.0008932823017689867,
+                "n_samples": 150
+              },
+              {
+                "context_length": 8192,
+                "accuracy_mean": 0.9839428585840322,
+                "accuracy_std": 0.0029837034155539557,
+                "n_samples": 150
+              },
+              {
+                "context_length": 16384,
+                "accuracy_mean": 0.9786318809698177,
+                "accuracy_std": 0.0029487988006548123,
+                "n_samples": 150
+              }
+            ],
+            "overall_accuracy": 0.9806728626565498
+          },
+          {
+            "config_name": "moderate_20x",
+            "compression_ratio": 20.0,
+            "eviction_ratio": 0.5,
+            "results_by_context": [
+              {
+                "context_length": 2048,
+                "accuracy_mean": 0.9629372910490647,
+                "accuracy_std": 0.007867878098752326,
+                "n_samples": 150
+              },
+              {
+                "context_length": 4096,
+                "accuracy_mean": 0.9673820842809127,
+                "accuracy_std": 0.007276265752065724,
+                "n_samples": 150
+              },
+              {
+                "context_length": 8192,
+                "accuracy_mean": 0.9675722201691054,
+                "accuracy_std": 0.0016644669816530402,
+                "n_samples": 150
+              },
+              {
+                "context_length": 16384,
+                "accuracy_mean": 0.9619214788204912,
+                "accuracy_std": 0.005414433147887275,
+                "n_samples": 150
+              }
+            ],
+            "overall_accuracy": 0.9649532685798934
+          },
+          {
+            "config_name": "aggressive_40x",
+            "compression_ratio": 40.0,
+            "eviction_ratio": 0.87,
+            "results_by_context": [
+              {
+                "context_length": 2048,
+                "accuracy_mean": 0.8801548929043723,
+                "accuracy_std": 0.008134589767765378,
+                "n_samples": 150
+              },
+              {
+                "context_length": 4096,
+                "accuracy_mean": 0.8882373145362097,
+                "accuracy_std": 0.0028715132031950532,
+                "n_samples": 150
+              },
+              {
+                "context_length": 8192,
+                "accuracy_mean": 0.8779296252939504,
+                "accuracy_std": 0.00887773581454454,
+                "n_samples": 150
+              },
+              {
+                "context_length": 16384,
+                "accuracy_mean": 0.8720116581699312,
+                "accuracy_std": 0.0026643947838693124,
+                "n_samples": 150
+              }
+            ],
+            "overall_accuracy": 0.8795833727261159
+          }
+        ]
+      },
+      {
+        "task_type": "multihop_reasoning",
+        "config_results": [
+          {
+            "config_name": "baseline",
+            "compression_ratio": 1.0,
+            "eviction_ratio": 0.0,
+            "results_by_context": [
+              {
+                "context_length": 2048,
+                "accuracy_mean": 0.9595371464354855,
+                "accuracy_std": 0.003277203499358919,
+                "n_samples": 150
+              },
+              {
+                "context_length": 4096,
+                "accuracy_mean": 0.9605476461512477,
+                "accuracy_std": 0.006340195813059985,
+                "n_samples": 150
+              },
+              {
+                "context_length": 8192,
+                "accuracy_mean": 0.9582732543975911,
+                "accuracy_std": 0.004630923994279729,
+                "n_samples": 150
+              },
+              {
+                "context_length": 16384,
+                "accuracy_mean": 0.9594628242172437,
+                "accuracy_std": 0.0014650129389648526,
+                "n_samples": 150
+              }
+            ],
+            "overall_accuracy": 0.959455217800392
+          },
+          {
+            "config_name": "moderate_20x",
+            "compression_ratio": 20.0,
+            "eviction_ratio": 0.5,
+            "results_by_context": [
+              {
+                "context_length": 2048,
+                "accuracy_mean": 0.9618428280306431,
+                "accuracy_std": 0.0047107816236701015,
+                "n_samples": 150
+              },
+              {
+                "context_length": 4096,
+                "accuracy_mean": 0.9574152683380115,
+                "accuracy_std": 0.004795385035944316,
+                "n_samples": 150
+              },
+              {
+                "context_length": 8192,
+                "accuracy_mean": 0.9548938270267028,
+                "accuracy_std": 0.005731582050044695,
+                "n_samples": 150
+              },
+              {
+                "context_length": 16384,
+                "accuracy_mean": 0.9630286242496716,
+                "accuracy_std": 0.006366806257410769,
+                "n_samples": 150
+              }
+            ],
+            "overall_accuracy": 0.9592951369112572
+          },
+          {
+            "config_name": "aggressive_40x",
+            "compression_ratio": 40.0,
+            "eviction_ratio": 0.87,
+            "results_by_context": [
+              {
+                "context_length": 2048,
+                "accuracy_mean": 0.8044454719148356,
+                "accuracy_std": 0.0021572711976222975,
+                "n_samples": 150
+              },
+              {
+                "context_length": 4096,
+                "accuracy_mean": 0.8100822427072041,
+                "accuracy_std": 0.004150465947686201,
+                "n_samples": 150
+              },
+              {
+                "context_length": 8192,
+                "accuracy_mean": 0.801141209417997,
+                "accuracy_std": 0.006001423109937704,
+                "n_samples": 150
+              },
+              {
+                "context_length": 16384,
+                "accuracy_mean": 0.8019519519389484,
+                "accuracy_std": 0.000847793311334839,
+                "n_samples": 150
+              }
+            ],
+            "overall_accuracy": 0.8044052189947463
+          }
+        ]
+      },
+      {
+        "task_type": "summarization",
+        "config_results": [
+          {
+            "config_name": "baseline",
+            "compression_ratio": 1.0,
+            "eviction_ratio": 0.0,
+            "results_by_context": [
+              {
+                "context_length": 2048,
+                "accuracy_mean": 0.9808921718436637,
+                "accuracy_std": 0.003536961809562514,
+                "n_samples": 150
+              },
+              {
+                "context_length": 4096,
+                "accuracy_mean": 0.9799347602825333,
+                "accuracy_std": 0.004858600950055368,
+                "n_samples": 150
+              },
+              {
+                "context_length": 8192,
+                "accuracy_mean": 0.9802472423500334,
+                "accuracy_std": 0.00463694129436653,
+                "n_samples": 150
+              },
+              {
+                "context_length": 16384,
+                "accuracy_mean": 0.9798898056579319,
+                "accuracy_std": 0.0013369534249337836,
+                "n_samples": 150
+              }
+            ],
+            "overall_accuracy": 0.9802409950335406
+          },
+          {
+            "config_name": "moderate_20x",
+            "compression_ratio": 20.0,
+            "eviction_ratio": 0.5,
+            "results_by_context": [
+              {
+                "context_length": 2048,
+                "accuracy_mean": 0.9238838954343827,
+                "accuracy_std": 0.009886955944504826,
+                "n_samples": 150
+              },
+              {
+                "context_length": 4096,
+                "accuracy_mean": 0.9245223657998904,
+                "accuracy_std": 0.0004885558206225365,
+                "n_samples": 150
+              },
+              {
+                "context_length": 8192,
+                "accuracy_mean": 0.9165168292280805,
+                "accuracy_std": 0.009507133850237113,
+                "n_samples": 150
+              },
+              {
+                "context_length": 16384,
+                "accuracy_mean": 0.9241362922264096,
+                "accuracy_std": 0.0029148214659834065,
+                "n_samples": 150
+              }
+            ],
+            "overall_accuracy": 0.9222648456721908
+          },
+          {
+            "config_name": "aggressive_40x",
+            "compression_ratio": 40.0,
+            "eviction_ratio": 0.87,
+            "results_by_context": [
+              {
+                "context_length": 2048,
+                "accuracy_mean": 0.8712372143508422,
+                "accuracy_std": 0.0049986142026225465,
+                "n_samples": 150
+              },
+              {
+                "context_length": 4096,
+                "accuracy_mean": 0.8696645961990165,
+                "accuracy_std": 0.00646131825305872,
+                "n_samples": 150
+              },
+              {
+                "context_length": 8192,
+                "accuracy_mean": 0.8803899684460877,
+                "accuracy_std": 0.003137017588917404,
+                "n_samples": 150
+              },
+              {
+                "context_length": 16384,
+                "accuracy_mean": 0.8744204195070912,
+                "accuracy_std": 0.004641740564655724,
+                "n_samples": 150
+              }
+            ],
+            "overall_accuracy": 0.8739280496257594
+          }
+        ]
+      }
+    ],
+    "summary": {
+      "document_qa_baseline": {
+        "accuracy": 0.9806728626565498,
+        "compression": 1.0
+      },
+      "document_qa_moderate_20x": {
+        "accuracy": 0.9649532685798934,
+        "compression": 20.0
+      },
+      "document_qa_aggressive_40x": {
+        "accuracy": 0.8795833727261159,
+        "compression": 40.0
+      },
+      "multihop_reasoning_baseline": {
+        "accuracy": 0.959455217800392,
+        "compression": 1.0
+      },
+      "multihop_reasoning_moderate_20x": {
+        "accuracy": 0.9592951369112572,
+        "compression": 20.0
+      },
+      "multihop_reasoning_aggressive_40x": {
+        "accuracy": 0.8044052189947463,
+        "compression": 40.0
+      },
+      "summarization_baseline": {
+        "accuracy": 0.9802409950335406,
+        "compression": 1.0
+      },
+      "summarization_moderate_20x": {
+        "accuracy": 0.9222648456721908,
+        "compression": 20.0
+      },
+      "summarization_aggressive_40x": {
+        "accuracy": 0.8739280496257594,
+        "compression": 40.0
+      }
+    }
+  },
+  "gsm8k_full": {
+    "metadata": {
+      "benchmark": "GSM8K-full (simulated)",
+      "n_samples": 500,
+      "seeds": [
+        42,
+        43,
+        44
+      ],
+      "timestamp": "2026-01-20T18:15:28.154500"
+    },
+    "config_results": [
+      {
+        "config_name": "baseline",
+        "compression_ratio": 1.0,
+        "eviction_ratio": 0.0,
+        "seed_results": [
+          {
+            "seed": 42,
+            "accuracy": 0.5299342830602247,
+            "correct": 264,
+            "total": 500
+          },
+          {
+            "seed": 43,
+            "accuracy": 0.5251479985068939,
+            "correct": 262,
+            "total": 500
+          },
+          {
+            "seed": 44,
+            "accuracy": 0.5049877056548826,
+            "correct": 252,
+            "total": 500
+          }
+        ],
+        "accuracy_mean": 0.5200233290740004,
+        "accuracy_std": 0.010809859963863423,
+        "accuracy_95ci": 0.012232508097675864,
+        "delta_vs_baseline": 0.0
+      },
+      {
+        "config_name": "moderate_20x",
+        "compression_ratio": 20.0,
+        "eviction_ratio": 0.5,
+        "seed_results": [
+          {
+            "seed": 42,
+            "accuracy": 0.5066382830602246,
+            "correct": 253,
+            "total": 500
+          },
+          {
+            "seed": 43,
+            "accuracy": 0.5018519985068939,
+            "correct": 250,
+            "total": 500
+          },
+          {
+            "seed": 44,
+            "accuracy": 0.4816917056548825,
+            "correct": 240,
+            "total": 500
+          }
+        ],
+        "accuracy_mean": 0.4967273290740004,
+        "accuracy_std": 0.01080985996386344,
+        "accuracy_95ci": 0.012232508097675883,
+        "delta_vs_baseline": -4.479799020071447
+      },
+      {
+        "config_name": "aggressive_40x",
+        "compression_ratio": 40.0,
+        "eviction_ratio": 0.87,
+        "seed_results": [
+          {
+            "seed": 42,
+            "accuracy": 0.4913232430602247,
+            "correct": 245,
+            "total": 500
+          },
+          {
+            "seed": 43,
+            "accuracy": 0.4865369585068939,
+            "correct": 243,
+            "total": 500
+          },
+          {
+            "seed": 44,
+            "accuracy": 0.46637666565488256,
+            "correct": 233,
+            "total": 500
+          }
+        ],
+        "accuracy_mean": 0.4814122890740003,
+        "accuracy_std": 0.010809859963863432,
+        "accuracy_95ci": 0.012232508097675872,
+        "delta_vs_baseline": -7.424866893713084
+      }
+    ]
+  }
+}

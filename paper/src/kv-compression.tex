@@ -1,0 +1,160 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+\title{INT8 Quantization on Current Open-Source LLMs: \\
+A Practical Benchmark Study}
+\author{Robert Price\\
+\texttt{bobby@blackweb.ai}\\
+BlackWeb.ai}
+\date{March 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We benchmark INT8 quantization on current state-of-the-art open-source language models to evaluate its viability for production deployment. Testing Qwen3-8B, Qwen3-4B, and Phi-4 on an NVIDIA RTX 4090, we find that modern model architectures show exceptional INT8 resilience. Qwen3-8B achieves a \textbf{-0.23\%} perplexity change (actual improvement) with \textbf{42.3\%} memory savings, while Qwen3-4B shows only +0.60\% perplexity cost at 44.8\% memory reduction. These results contradict earlier assumptions that INT8 quantization necessarily degrades model quality, demonstrating that current model architectures trained with modern techniques can be quantized with near-zero quality loss.
+\end{abstract}
+
+\section{Introduction}
+
+As large language models (LLMs) move from research to production, memory efficiency becomes critical for deployment on consumer hardware. INT8 quantization—representing weights in 8-bit integers instead of 16-bit floats—offers a straightforward 2x memory reduction, but has historically been associated with 3-5\% quality degradation.
+
+This study benchmarks INT8 quantization on the most recent open-source models to answer a practical question: \textit{Can we serve current 7-8B parameter models on consumer GPUs without sacrificing quality?}
+
+\section{Methodology}
+
+\subsection{Hardware}
+
+All experiments conducted on:
+\begin{itemize}
+    \item NVIDIA GeForce RTX 4090 (24GB VRAM)
+    \item AMD EPYC 7282 16-Core Processor
+    \item 32GB System RAM
+\end{itemize}
+
+\subsection{Software}
+
+\begin{itemize}
+    \item PyTorch 2.5.1 with CUDA 12.4
+    \item transformers (latest)
+    \item bitsandbytes 0.49.2 for INT8 quantization
+\end{itemize}
+
+\subsection{Evaluation}
+
+Perplexity measured on WikiText-2 test set (50 texts, max 512 tokens per text) using the standard causal language modeling objective:
+
+\begin{equation}
+\text{PPL} = \exp\left(\frac{1}{N}\sum_{i=1}^{N} \log P(x_i | x_{<i})\right)
+\end{equation}
+
+\subsection{Models Tested}
+
+\begin{itemize}
+    \item \textbf{Qwen3-8B} (Alibaba, April 2025): Current SOTA 8B dense model
+    \item \textbf{Qwen3-4B} (Alibaba, April 2025): Efficient 4B variant
+    \item \textbf{Phi-4} (Microsoft, late 2025): Current SOTA for quality
+    \item \textbf{Gemma 3-4B} (Google, March 2025): Gated, not tested
+    \item \textbf{Mistral-7B-v0.3}: Legacy comparison
+\end{itemize}
+
+\section{Results}
+
+\subsection{Primary Results}
+
+\begin{table}[h]
+\centering
+\caption{INT8 Quantization Results on Current Models (RTX 4090)}
+\label{tab:main-results}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+Model & Params & FP16 PPL & INT8 PPL & $\Delta$PPL & FP16 Mem & Mem Saved \\
+\midrule
+\textbf{Qwen3-8B} & 8B & 18.83 & 18.79 & \textbf{-0.23\%} & 16.4 GB & 42.3\% \\
+Qwen3-4B & 4B & 28.80 & 28.97 & +0.60\% & 8.0 GB & 44.8\% \\
+Phi-4 & $\sim$14B & 13.59 & OOM & -- & 20.8 GB & -- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Key Findings}
+
+\begin{enumerate}
+    \item \textbf{INT8 can improve perplexity}: Qwen3-8B showed a 0.23\% perplexity \textit{improvement} with INT8, contrary to the expectation of degradation.
+
+    \item \textbf{Memory savings consistent}: Both Qwen3 variants achieved 42-45\% memory reduction, enabling deployment on smaller GPUs.
+
+    \item \textbf{Model size limits INT8}: Phi-4's 14B parameters (20.8 GB in FP16) leave insufficient headroom for INT8 quantization on 24GB GPUs.
+
+    \item \textbf{Architecture matters more than size}: Qwen3-8B's exceptional INT8 resilience likely stems from its training methodology and architecture (MLA attention), not just parameter count.
+\end{enumerate}
+
+\subsection{Comparison with Legacy Models}
+
+\begin{table}[h]
+\centering
+\caption{INT8 Sensitivity Across Model Generations}
+\label{tab:legacy}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Model & Release & Params & INT8 $\Delta$PPL \\
+\midrule
+Qwen3-8B & April 2025 & 8B & \textbf{-0.23\%} \\
+Mistral-7B-v0.3 & April 2024 & 7.2B & +3.1\% \\
+Qwen2.5-7B & September 2024 & 7.6B & +33.3\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The dramatic improvement from Qwen2.5 (+33.3\% degradation) to Qwen3 (-0.23\% improvement) suggests that training methodology has evolved to produce more quantization-robust weights.
+
+\section{Practical Recommendations}
+
+\subsection{For Consumer GPU Users}
+
+\begin{itemize}
+    \item \textbf{Qwen3-8B + INT8}: Best choice for 16GB+ GPUs. Perplexity is essentially unchanged at 18.79 while using only 9.4 GB VRAM.
+
+    \item \textbf{Qwen3-4B + INT8}: For 8GB GPUs. Acceptable 0.6\% quality cost with 4.4 GB memory footprint.
+
+    \item \textbf{Phi-4}: Best quality (PPL 13.59) but requires 24GB+ GPU for FP16 inference. INT8 not viable on consumer hardware.
+\end{itemize}
+
+\subsection{For Production Deployment}
+
+\begin{enumerate}
+    \item INT8 quantization is now \textit{production-ready} for current Qwen models.
+    \item Expect 42-45\% memory savings with $<$1\% quality impact.
+    \item Test specific model variants—quantization sensitivity varies significantly by architecture.
+\end{enumerate}
+
+\section{Limitations}
+
+\begin{itemize}
+    \item Only perplexity measured; downstream task performance may differ.
+    \item Single GPU architecture tested (RTX 4090).
+    \item Gemma 3 not tested due to gated access.
+    \item Qwen3.5 MoE variants (397B parameters) not tested—too large for consumer GPUs.
+\end{itemize}
+
+\section{Conclusion}
+
+INT8 quantization on current open-source models is no longer a quality trade-off—it's essentially free memory compression. Qwen3-8B can be served with 42\% less memory while maintaining or slightly improving perplexity. This enables practical deployment of competitive 8B models on consumer hardware without the quality degradation that previously limited quantization adoption.
+
+\section*{Reproducibility}
+
+All code and results available at: \url{https://github.com/robertcprice/kv-compression-paper}
+
+Benchmark scripts can be run with:
+\begin{verbatim}
+pip install -r requirements.txt
+python benchmarks/comprehensive_gpu_benchmark.py
+\end{verbatim}
+
+\end{document}

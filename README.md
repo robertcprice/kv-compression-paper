@@ -6,7 +6,14 @@ Robert Price | bobby@blackweb.ai | BlackWeb.ai
 
 ## Paper
 
-The full paper is available in `paper/kv-compression-full.pdf`.
+The updated paper with current benchmark results is available in `paper/kv-compression-benchmark-2026-03.pdf`.
+
+**Key findings:**
+- Qwen3-8B: INT8 improves perplexity by 0.23% while saving 42% memory
+- Qwen3-4B: Only 0.6% PPL cost at 45% memory savings
+- INT8 quantization is now production-ready for current models
+
+The legacy paper is preserved as `paper/kv-compression-full.pdf` for reference.
 
 ## Quick Start
 

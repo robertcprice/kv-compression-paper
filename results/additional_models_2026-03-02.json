@@ -1,0 +1,34 @@
+[
+  {
+    "model_id": "google/gemma-3-4b-it",
+    "status": "gated",
+    "error": "You are trying to access a gated repo.\nMake sure to have access to it at https://huggingface.co/goog"
+  },
+  {
+    "model_id": "google/gemma-3-1b-it",
+    "status": "gated",
+    "error": "You are trying to access a gated repo.\nMake sure to have access to it at https://huggingface.co/goog"
+  },
+  {
+    "model_id": "microsoft/phi-4",
+    "status": "partial",
+    "fp16_ppl": 13.593399680394421,
+    "fp16_mem_gb": 20.793857024,
+    "int8_error": "CUDA out of memory. Tried to allocate 76.00 MiB. GPU 0 has a total capacity of 23.53 GiB of which 34"
+  },
+  {
+    "model_id": "mistralai/Mistral-7B-v0.3",
+    "status": "complete",
+    "fp16_ppl": 21.03049680110726,
+    "int8_ppl": 13.31813724344875,
+    "ppl_change_pct": -36.67226518991436,
+    "fp16_mem_gb": 14.504567808,
+    "int8_mem_gb": 7.530750976,
+    "mem_saved_pct": 48.08014223046059
+  },
+  {
+    "model_id": "deepseek-ai/DeepSeek-V2.5",
+    "status": "load_error",
+    "error": "cannot import name 'is_torch_fx_available' from 'transformers.utils.import_utils' (/opt/conda/lib/py"
+  }
+]

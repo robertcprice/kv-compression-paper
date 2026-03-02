@@ -54,6 +54,14 @@ WikiText-2 test set, 50 texts. PyTorch 2.5.1, CUDA 12.4, transformers, bitsandby
 | **Qwen3-8B** | 8B | 18.83 | 18.79 | **-0.23%** ✓ | 16.4 GB | 9.4 GB | **42.3%** |
 | Qwen3-4B | 4B | 28.80 | 28.97 | +0.60% | 8.0 GB | 4.4 GB | 44.8% |
 
+### Additional Current Models Tested
+
+| Model | Params | FP16 PPL | INT8 Status | FP16 Mem | Notes |
+|-------|--------|----------|-------------|----------|-------|
+| **Phi-4** | ~14B | 13.59 | OOM | 20.8 GB | Best PPL, but too large for INT8 on 24GB |
+| Gemma 3-4B | 4B | - | Gated | - | Requires HF token acceptance |
+| DeepSeek-V2.5 | 210B MoE | - | Error | - | Requires newer transformers |
+
 ### Key Findings
 
 **INT8 quantization on current Qwen3 models is production-ready:**

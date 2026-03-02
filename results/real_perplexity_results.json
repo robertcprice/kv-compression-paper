@@ -1,0 +1,215 @@
+{
+  "distilgpt2": {
+    "model": "distilgpt2",
+    "device": "mps",
+    "max_length": 1024,
+    "stride": 512,
+    "n_texts": 50,
+    "n_seeds": 3,
+    "stages": [
+      {
+        "name": "Baseline (FP32)",
+        "compression_ratio": 1.0,
+        "perplexity": 93.639,
+        "ppl_delta_pct": 0.0,
+        "eval_time_s": 1.91,
+        "config": {
+          "quant": null,
+          "head_reduce": 1.0,
+          "evict": 1.0
+        }
+      },
+      {
+        "name": "INT8 Quantization",
+        "compression_ratio": 4.0,
+        "perplexity": 93.638,
+        "ppl_delta_pct": -0.0,
+        "eval_time_s": 3.17,
+        "config": {
+          "quant": "int8",
+          "head_reduce": 1.0,
+          "evict": 1.0
+        }
+      },
+      {
+        "name": "INT8 + Head Reduction (80%)",
+        "compression_ratio": 5.0,
+        "perplexity": 106.441,
+        "ppl_delta_pct": 13.67,
+        "eval_time_s": 1.32,
+        "config": {
+          "quant": "int8",
+          "head_reduce": 0.8,
+          "evict": 1.0
+        }
+      },
+      {
+        "name": "Moderate (INT8 + 80% heads + 50% evict)",
+        "compression_ratio": 10.0,
+        "perplexity": 131.379,
+        "ppl_delta_pct": 40.3,
+        "eval_time_s": 2.64,
+        "config": {
+          "quant": "int8",
+          "head_reduce": 0.8,
+          "evict": 0.5
+        }
+      },
+      {
+        "name": "Aggressive (INT8 + 60% heads + 87% evict)",
+        "compression_ratio": 38.5,
+        "perplexity": 199.354,
+        "ppl_delta_pct": 112.9,
+        "eval_time_s": 2.48,
+        "config": {
+          "quant": "int8",
+          "head_reduce": 0.6,
+          "evict": 0.13
+        }
+      }
+    ],
+    "timestamp": "2026-02-28T18:43:43.661395"
+  },
+  "gpt2": {
+    "model": "gpt2",
+    "device": "mps",
+    "max_length": 1024,
+    "stride": 512,
+    "n_texts": 50,
+    "n_seeds": 3,
+    "stages": [
+      {
+        "name": "Baseline (FP32)",
+        "compression_ratio": 1.0,
+        "perplexity": 63.355,
+        "ppl_delta_pct": 0.0,
+        "eval_time_s": 0.87,
+        "config": {
+          "quant": null,
+          "head_reduce": 1.0,
+          "evict": 1.0
+        }
+      },
+      {
+        "name": "INT8 Quantization",
+        "compression_ratio": 4.0,
+        "perplexity": 63.358,
+        "ppl_delta_pct": 0.0,
+        "eval_time_s": 2.14,
+        "config": {
+          "quant": "int8",
+          "head_reduce": 1.0,
+          "evict": 1.0
+        }
+      },
+      {
+        "name": "INT8 + Head Reduction (80%)",
+        "compression_ratio": 5.0,
+        "perplexity": 68.95,
+        "ppl_delta_pct": 8.83,
+        "eval_time_s": 1.93,
+        "config": {
+          "quant": "int8",
+          "head_reduce": 0.8,
+          "evict": 1.0
+        }
+      },
+      {
+        "name": "Moderate (INT8 + 80% heads + 50% evict)",
+        "compression_ratio": 10.0,
+        "perplexity": 82.124,
+        "ppl_delta_pct": 29.62,
+        "eval_time_s": 2.83,
+        "config": {
+          "quant": "int8",
+          "head_reduce": 0.8,
+          "evict": 0.5
+        }
+      },
+      {
+        "name": "Aggressive (INT8 + 60% heads + 87% evict)",
+        "compression_ratio": 38.5,
+        "perplexity": 150.82,
+        "ppl_delta_pct": 138.05,
+        "eval_time_s": 2.81,
+        "config": {
+          "quant": "int8",
+          "head_reduce": 0.6,
+          "evict": 0.13
+        }
+      }
+    ],
+    "timestamp": "2026-02-28T18:43:55.170996"
+  },
+  "gpt2-medium": {
+    "model": "gpt2-medium",
+    "device": "mps",
+    "max_length": 1024,
+    "stride": 512,
+    "n_texts": 50,
+    "n_seeds": 3,
+    "stages": [
+      {
+        "name": "Baseline (FP32)",
+        "compression_ratio": 1.0,
+        "perplexity": 46.815,
+        "ppl_delta_pct": 0.0,
+        "eval_time_s": 3.43,
+        "config": {
+          "quant": null,
+          "head_reduce": 1.0,
+          "evict": 1.0
+        }
+      },
+      {
+        "name": "INT8 Quantization",
+        "compression_ratio": 4.0,
+        "perplexity": 46.817,
+        "ppl_delta_pct": 0.0,
+        "eval_time_s": 7.03,
+        "config": {
+          "quant": "int8",
+          "head_reduce": 1.0,
+          "evict": 1.0
+        }
+      },
+      {
+        "name": "INT8 + Head Reduction (80%)",
+        "compression_ratio": 5.0,
+        "perplexity": 50.314,
+        "ppl_delta_pct": 7.47,
+        "eval_time_s": 4.39,
+        "config": {
+          "quant": "int8",
+          "head_reduce": 0.8,
+          "evict": 1.0
+        }
+      },
+      {
+        "name": "Moderate (INT8 + 80% heads + 50% evict)",
+        "compression_ratio": 10.0,
+        "perplexity": 58.966,
+        "ppl_delta_pct": 25.95,
+        "eval_time_s": 6.46,
+        "config": {
+          "quant": "int8",
+          "head_reduce": 0.8,
+          "evict": 0.5
+        }
+      },
+      {
+        "name": "Aggressive (INT8 + 60% heads + 87% evict)",
+        "compression_ratio": 38.5,
+        "perplexity": 103.652,
+        "ppl_delta_pct": 121.41,
+        "eval_time_s": 6.39,
+        "config": {
+          "quant": "int8",
+          "head_reduce": 0.6,
+          "evict": 0.13
+        }
+      }
+    ],
+    "timestamp": "2026-02-28T18:44:24.787059"
+  }
+}

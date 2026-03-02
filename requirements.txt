@@ -1,7 +1,12 @@
-torch>=2.9.0
+torch>=2.0.0
 transformers>=4.30.0
 datasets>=2.14.0
 numpy>=1.24.0
 scipy>=1.10.0
-matplotlib>=3.7.0
 tqdm>=4.65.0
+
+# Optional: FlashAttention (CUDA only)
+# flash-attn>=2.5.0
+
+# Optional: vLLM integration (CUDA only)
+# vllm>=0.4.0

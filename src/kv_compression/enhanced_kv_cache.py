@@ -10,7 +10,7 @@ Combines ALL compression techniques to achieve 38-50x memory reduction:
 This is the production implementation that achieves the claimed 38.4x compression.
 
 Usage:
-    from gpu.optimizations.enhanced_kv_cache import EnhancedKVCacheManager
+    from kv_compression.enhanced_kv_cache import EnhancedKVCacheManager
 
     manager = EnhancedKVCacheManager(
         num_layers=36,
@@ -25,6 +25,7 @@ Usage:
     manager.update_layer(layer_idx, new_k, new_v, attention_weights)
 """
 
+import heapq
 import torch
 import torch.nn as nn
 from typing import Dict, List, Tuple, Optional
@@ -153,10 +154,15 @@ class INT8QuantizedCache:
 
 class ImportanceEvictionCache:
     """
-    KV Cache with importance-based eviction.
+    KV Cache with importance-based eviction using a min-heap.
 
+    O(log n) eviction instead of O(n) linear scan.
     Keeps only the most important tokens based on attention weights.
     """
+
+    # Number of initial "sink" tokens protected from eviction.
+    # These capture global context and are almost always attended to.
+    SINK_TOKENS = 4
 
     def __init__(
         self,
@@ -168,9 +174,25 @@ class ImportanceEvictionCache:
         self.head_dim = head_dim
         self.max_tokens = max_tokens
 
-        self.k_cache = []  # List of (position, importance, k_tensor)
-        self.v_cache = []  # List of (position, importance, v_tensor)
+        # Heap entries: (importance, unique_id, index_into_data)
+        # Using unique_id as tiebreaker so torch tensors are never compared
+        self._heap: List[Tuple[float, int, int]] = []
+        # Data storage keyed by slot id
+        self._k_data: Dict[int, torch.Tensor] = {}
+        self._v_data: Dict[int, torch.Tensor] = {}
+        self._importance: Dict[int, float] = {}
+        self._positions: Dict[int, int] = {}
+        # Track which heap entries are still alive (lazy deletion)
+        self._alive: set = set()
+
+        self._next_id = 0
+        self._insertion_order: List[int] = []  # ordered list of alive ids
         self.eviction_count = 0
+
+    def _alloc_id(self) -> int:
+        uid = self._next_id
+        self._next_id += 1
+        return uid
 
     def update(
         self,
@@ -188,59 +210,64 @@ class ImportanceEvictionCache:
         """
         _, _, new_len, _ = new_k.shape
 
-        # Default importance: recent tokens more important
         if importance is None:
-            base_pos = len(self.k_cache)
+            base_pos = len(self._alive)
             importance = torch.arange(new_len, dtype=torch.float32) + base_pos
             importance = importance / (importance.max() + 1)
 
-        # Add new tokens
         for i in range(new_len):
-            pos = len(self.k_cache)
-            imp = importance[i].item() if isinstance(importance, torch.Tensor) else importance
+            uid = self._alloc_id()
+            imp = importance[i].item() if isinstance(importance, torch.Tensor) else float(importance)
 
-            self.k_cache.append({
-                'position': pos,
-                'importance': imp,
-                'data': new_k[0, :, i, :].clone().cpu(),  # [heads, dim]
-            })
-            self.v_cache.append({
-                'position': pos,
-                'importance': imp,
-                'data': new_v[0, :, i, :].clone().cpu(),
-            })
+            self._k_data[uid] = new_k[0, :, i, :].clone().cpu()
+            self._v_data[uid] = new_v[0, :, i, :].clone().cpu()
+            self._importance[uid] = imp
+            self._positions[uid] = len(self._insertion_order)
+            self._alive.add(uid)
+            self._insertion_order.append(uid)
 
-        # Evict if over capacity
-        while len(self.k_cache) > self.max_tokens:
+            # Push onto min-heap (lowest importance evicted first)
+            heapq.heappush(self._heap, (imp, uid))
+
+        # Evict until at capacity
+        while len(self._alive) > self.max_tokens:
             self._evict_least_important()
 
     def _evict_least_important(self):
-        """Remove least important token."""
-        if not self.k_cache:
+        """Remove least important token in O(log n). Protects sink tokens."""
+        while self._heap:
+            imp, uid = heapq.heappop(self._heap)
+            if uid not in self._alive:
+                continue  # lazy deletion: skip already-evicted entries
+            # Protect sink tokens (first SINK_TOKENS insertions still alive)
+            pos = self._positions.get(uid, float('inf'))
+            if pos < self.SINK_TOKENS:
+                # Re-insert with boosted importance so it stays
+                heapq.heappush(self._heap, (float('inf'), uid))
+                continue
+            # Evict this entry
+            self._alive.discard(uid)
+            del self._k_data[uid]
+            del self._v_data[uid]
+            del self._importance[uid]
+            del self._positions[uid]
+            self.eviction_count += 1
             return
-
-        # Find least important (skip first few tokens - they're usually important)
-        min_idx = min(
-            range(min(10, len(self.k_cache)), len(self.k_cache)),
-            key=lambda i: self.k_cache[i]['importance'],
-            default=0
-        )
-
-        self.k_cache.pop(min_idx)
-        self.v_cache.pop(min_idx)
-        self.eviction_count += 1
+        # Nothing to evict (shouldn't happen if max_tokens > SINK_TOKENS)
 
     def get(self, device='cpu') -> Tuple[torch.Tensor, torch.Tensor]:
-        """Get KV cache as tensors."""
-        if not self.k_cache:
+        """Get KV cache as tensors, ordered by original position."""
+        if not self._alive:
             return None, None
 
-        k = torch.stack([entry['data'] for entry in self.k_cache], dim=1)  # [heads, tokens, dim]
-        v = torch.stack([entry['data'] for entry in self.v_cache], dim=1)
+        # Return in insertion order
+        ordered_ids = [uid for uid in self._insertion_order if uid in self._alive]
 
-        k = k.unsqueeze(0).to(device)  # [batch, heads, tokens, dim]
+        k = torch.stack([self._k_data[uid] for uid in ordered_ids], dim=1)
+        v = torch.stack([self._v_data[uid] for uid in ordered_ids], dim=1)
+
+        k = k.unsqueeze(0).to(device)
         v = v.unsqueeze(0).to(device)
-
         return k, v
 
     def update_importance(self, attention_weights: torch.Tensor):
@@ -250,19 +277,24 @@ class ImportanceEvictionCache:
         Args:
             attention_weights: [batch, heads, query_len, key_len]
         """
-        if attention_weights is None or not self.k_cache:
+        if attention_weights is None or not self._alive:
             return
 
-        # Average attention over heads and queries
-        avg_attention = attention_weights.mean(dim=(0, 1, 2))  # [key_len]
+        avg_attention = attention_weights.mean(dim=(0, 1, 2))
+        ordered_ids = [uid for uid in self._insertion_order if uid in self._alive]
 
-        # Update importance scores
-        for i, score in enumerate(avg_attention[:len(self.k_cache)]):
-            # Blend with existing importance
-            old_imp = self.k_cache[i]['importance']
-            new_imp = 0.7 * old_imp + 0.3 * score.item()
-            self.k_cache[i]['importance'] = new_imp
-            self.v_cache[i]['importance'] = new_imp
+        for i, uid in enumerate(ordered_ids):
+            if i >= len(avg_attention):
+                break
+            old_imp = self._importance[uid]
+            new_imp = 0.7 * old_imp + 0.3 * avg_attention[i].item()
+            self._importance[uid] = new_imp
+            # Push updated importance (old entry becomes stale via lazy deletion)
+            heapq.heappush(self._heap, (new_imp, uid))
+
+    @property
+    def size(self) -> int:
+        return len(self._alive)
 
 
 class EnhancedKVCacheManager:
@@ -274,7 +306,7 @@ class EnhancedKVCacheManager:
     2. Layer-adaptive head reduction (1.25-1.67x)
     3. Importance-based eviction (2.5-10x)
 
-    Combined: 4 * 1.5 * 6.4 ≈ 38.4x
+    Combined: 4 * 1.5 * 6.4 ~ 38.4x
     """
 
     def __init__(
@@ -300,20 +332,17 @@ class EnhancedKVCacheManager:
         self.layer_heads = self._compute_layer_heads()
 
         # Per-layer caches
-        self.caches = []
+        self.caches: List = []
 
     def _compute_layer_heads(self) -> List[int]:
         """Compute head count for each layer."""
         heads = []
         for layer_idx in range(self.num_layers):
             if layer_idx < self.num_layers // 3:
-                # Early: 100% heads
                 heads.append(self.num_heads)
             elif layer_idx < 2 * self.num_layers // 3:
-                # Mid: 80% heads
                 heads.append(max(1, int(self.num_heads * 0.8)))
             else:
-                # Late: 60% heads
                 heads.append(max(1, int(self.num_heads * 0.6)))
         return heads
 
@@ -340,12 +369,6 @@ class EnhancedKVCacheManager:
 
             self.caches.append(cache)
 
-        print(f"✓ Enhanced KV Cache allocated:")
-        print(f"  - {self.num_layers} layers")
-        print(f"  - INT8 quantization: {self.use_int8}")
-        print(f"  - Max cached tokens: {self.max_cached_tokens}/{self.max_seq_len}")
-        print(f"  - Head reduction: 100%/80%/60% by layer")
-
     def update_layer(
         self,
         layer_idx: int,
@@ -366,7 +389,6 @@ class EnhancedKVCacheManager:
         if isinstance(cache, INT8QuantizedCache):
             cache.update(new_k, new_v)
         else:
-            # Compute importance from attention
             importance = None
             if attention_weights is not None:
                 importance = attention_weights.mean(dim=(0, 1, 2))
@@ -378,23 +400,16 @@ class EnhancedKVCacheManager:
 
     def get_memory_usage(self) -> Dict[str, float]:
         """Calculate memory usage and compression ratio."""
-        # Actual memory used
         total_bytes = 0
         for cache in self.caches:
             if isinstance(cache, INT8QuantizedCache):
                 total_bytes += cache.memory_bytes()
             else:
-                # ImportanceEvictionCache - FP32
-                total_bytes += len(cache.k_cache) * cache.num_heads * cache.head_dim * 4 * 2
+                total_bytes += cache.size * cache.num_heads * cache.head_dim * 4 * 2
 
-        # FP32 equivalent (what it would be without compression)
         fp32_bytes = (
-            2 *  # K and V
-            self.num_layers *
-            self.max_seq_len *
-            self.num_heads *
-            self.head_dim *
-            4  # FP32 = 4 bytes
+            2 * self.num_layers * self.max_seq_len *
+            self.num_heads * self.head_dim * 4
         )
 
         total_mb = total_bytes / (1024 * 1024)
@@ -416,27 +431,24 @@ def test_enhanced_cache():
     print("ENHANCED KV CACHE TEST")
     print("=" * 70)
 
-    # Create manager matching white paper config
     manager = EnhancedKVCacheManager(
         num_layers=36,
         num_heads=12,
         head_dim=64,
         max_seq_len=2048,
-        eviction_ratio=0.13,  # For ~38x compression
+        eviction_ratio=0.13,
         use_int8=True,
     )
     manager.allocate_all('cpu')
 
-    # Simulate adding tokens
     batch_size = 1
-    for i in range(0, 256, 32):  # Add 256 tokens in chunks
+    for i in range(0, 256, 32):
         for layer_idx in range(36):
             n_heads = manager.layer_heads[layer_idx]
             new_k = torch.randn(batch_size, n_heads, 32, 64)
             new_v = torch.randn(batch_size, n_heads, 32, 64)
             manager.update_layer(layer_idx, new_k, new_v)
 
-    # Check compression
     usage = manager.get_memory_usage()
 
     print(f"\n{'='*70}")
@@ -448,9 +460,9 @@ def test_enhanced_cache():
     print(f"  Cached tokens: {usage['cached_tokens']}")
 
     if usage['compression_ratio'] >= 35:
-        print(f"\n✅ COMPRESSION TARGET ACHIEVED! ({usage['compression_ratio']:.1f}x >= 35x)")
+        print(f"\n  COMPRESSION TARGET ACHIEVED! ({usage['compression_ratio']:.1f}x >= 35x)")
     else:
-        print(f"\n⚠️ Compression below target: {usage['compression_ratio']:.1f}x < 35x")
+        print(f"\n  Compression below target: {usage['compression_ratio']:.1f}x < 35x")
 
     return usage
 

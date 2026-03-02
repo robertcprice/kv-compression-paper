@@ -1,0 +1,402 @@
+{
+  "metadata": {
+    "benchmark_version": "v5",
+    "device": "cuda",
+    "pytorch_version": "2.10.0+cu128",
+    "cuda_version": "12.8",
+    "gpu_name": "NVIDIA GeForce RTX 4090",
+    "gpu_memory_gb": 25.3,
+    "n_wiki_texts": 100,
+    "n_gsm8k_problems": 50,
+    "timestamp": "2026-03-02T06:09:38.834882",
+    "compression_configs": [
+      "baseline",
+      "int8_only",
+      "int8_head_reduce",
+      "moderate_10x",
+      "standard_20x",
+      "aggressive_40x"
+    ],
+    "notes": "All configs use prefix+continuation PPL method for fair comparison. INT8 dequant preserves original dtype."
+  },
+  "models": {
+    "distilgpt2": {
+      "model": "distilgpt2",
+      "perplexity": {
+        "baseline": {
+          "ppl": 52.5091,
+          "delta_vs_baseline_pct": 0.0,
+          "compression_ratio": 1.0,
+          "eval_time_s": 1.29
+        },
+        "int8_only": {
+          "ppl": 64.028,
+          "delta_vs_baseline_pct": 21.94,
+          "compression_ratio": 4.0,
+          "eval_time_s": 1.24
+        },
+        "int8_head_reduce": {
+          "ppl": 72.1685,
+          "delta_vs_baseline_pct": 37.44,
+          "compression_ratio": 5.0,
+          "eval_time_s": 1.21
+        },
+        "moderate_10x": {
+          "ppl": 93.0516,
+          "delta_vs_baseline_pct": 77.21,
+          "compression_ratio": 10.0,
+          "eval_time_s": 1.35
+        },
+        "standard_20x": {
+          "ppl": 137.4452,
+          "delta_vs_baseline_pct": 161.75,
+          "compression_ratio": 20.0,
+          "eval_time_s": 1.3
+        },
+        "aggressive_40x": {
+          "ppl": 209.6068,
+          "delta_vs_baseline_pct": 299.18,
+          "compression_ratio": 40.0,
+          "eval_time_s": 1.3
+        }
+      },
+      "gsm8k": {
+        "skipped": true,
+        "reason": "82M params, too small for math"
+      },
+      "errors": [],
+      "n_params_M": 81.9,
+      "dtype": "torch.float32"
+    },
+    "gpt2": {
+      "model": "gpt2",
+      "perplexity": {
+        "baseline": {
+          "ppl": 35.2798,
+          "delta_vs_baseline_pct": 0.0,
+          "compression_ratio": 1.0,
+          "eval_time_s": 1.75
+        },
+        "int8_only": {
+          "ppl": 38.3904,
+          "delta_vs_baseline_pct": 8.82,
+          "compression_ratio": 4.0,
+          "eval_time_s": 2.22
+        },
+        "int8_head_reduce": {
+          "ppl": 42.2952,
+          "delta_vs_baseline_pct": 19.89,
+          "compression_ratio": 5.0,
+          "eval_time_s": 2.25
+        },
+        "moderate_10x": {
+          "ppl": 59.8199,
+          "delta_vs_baseline_pct": 69.56,
+          "compression_ratio": 10.0,
+          "eval_time_s": 2.43
+        },
+        "standard_20x": {
+          "ppl": 95.8134,
+          "delta_vs_baseline_pct": 171.58,
+          "compression_ratio": 20.0,
+          "eval_time_s": 2.42
+        },
+        "aggressive_40x": {
+          "ppl": 168.1935,
+          "delta_vs_baseline_pct": 376.74,
+          "compression_ratio": 40.0,
+          "eval_time_s": 2.43
+        }
+      },
+      "gsm8k": {
+        "skipped": true,
+        "reason": "124M params, too small for math"
+      },
+      "errors": [],
+      "n_params_M": 124.4,
+      "dtype": "torch.float32"
+    },
+    "gpt2-medium": {
+      "model": "gpt2-medium",
+      "perplexity": {
+        "baseline": {
+          "ppl": 25.4852,
+          "delta_vs_baseline_pct": 0.0,
+          "compression_ratio": 1.0,
+          "eval_time_s": 3.31
+        },
+        "int8_only": {
+          "ppl": 28.2571,
+          "delta_vs_baseline_pct": 10.88,
+          "compression_ratio": 4.0,
+          "eval_time_s": 4.29
+        },
+        "int8_head_reduce": {
+          "ppl": 30.2379,
+          "delta_vs_baseline_pct": 18.65,
+          "compression_ratio": 5.0,
+          "eval_time_s": 4.34
+        },
+        "moderate_10x": {
+          "ppl": 39.4567,
+          "delta_vs_baseline_pct": 54.82,
+          "compression_ratio": 10.0,
+          "eval_time_s": 4.69
+        },
+        "standard_20x": {
+          "ppl": 58.3262,
+          "delta_vs_baseline_pct": 128.86,
+          "compression_ratio": 20.0,
+          "eval_time_s": 4.69
+        },
+        "aggressive_40x": {
+          "ppl": 144.1626,
+          "delta_vs_baseline_pct": 465.67,
+          "compression_ratio": 40.0,
+          "eval_time_s": 4.7
+        }
+      },
+      "gsm8k": {
+        "skipped": true,
+        "reason": "355M params, too small for math"
+      },
+      "errors": [],
+      "n_params_M": 354.8,
+      "dtype": "torch.float32"
+    },
+    "microsoft/phi-2": {
+      "model": "microsoft/phi-2",
+      "perplexity": {
+        "baseline": {
+          "ppl": 12.441,
+          "delta_vs_baseline_pct": 0.0,
+          "compression_ratio": 1.0,
+          "eval_time_s": 5.83
+        },
+        "int8_only": {
+          "ppl": 13.2099,
+          "delta_vs_baseline_pct": 6.18,
+          "compression_ratio": 4.0,
+          "eval_time_s": 7.12
+        },
+        "int8_head_reduce": {
+          "ppl": 14.0071,
+          "delta_vs_baseline_pct": 12.59,
+          "compression_ratio": 5.0,
+          "eval_time_s": 7.2
+        },
+        "moderate_10x": {
+          "ppl": 20.0453,
+          "delta_vs_baseline_pct": 61.12,
+          "compression_ratio": 10.0,
+          "eval_time_s": 8.08
+        },
+        "standard_20x": {
+          "ppl": 24.8349,
+          "delta_vs_baseline_pct": 99.62,
+          "compression_ratio": 20.0,
+          "eval_time_s": 8.11
+        },
+        "aggressive_40x": {
+          "ppl": 26.502,
+          "delta_vs_baseline_pct": 113.02,
+          "compression_ratio": 40.0,
+          "eval_time_s": 8.13
+        }
+      },
+      "gsm8k": {
+        "baseline": {
+          "accuracy": 0.08,
+          "correct": 4,
+          "total": 50,
+          "delta_vs_baseline_pct": 0.0,
+          "compression_ratio": 1.0,
+          "eval_time_s": 230.92
+        },
+        "int8_only": {
+          "accuracy": 0.1,
+          "correct": 5,
+          "total": 50,
+          "delta_vs_baseline_pct": 25.0,
+          "compression_ratio": 4.0,
+          "eval_time_s": 365.02
+        },
+        "standard_20x": {
+          "accuracy": 0.04,
+          "correct": 2,
+          "total": 50,
+          "delta_vs_baseline_pct": -50.0,
+          "compression_ratio": 20.0,
+          "eval_time_s": 314.78
+        },
+        "aggressive_40x": {
+          "accuracy": 0.0,
+          "correct": 0,
+          "total": 50,
+          "delta_vs_baseline_pct": -100.0,
+          "compression_ratio": 40.0,
+          "eval_time_s": 312.94
+        }
+      },
+      "errors": [],
+      "n_params_M": 2779.7,
+      "dtype": "torch.bfloat16"
+    },
+    "mistralai/Mistral-7B-v0.3": {
+      "model": "mistralai/Mistral-7B-v0.3",
+      "perplexity": {
+        "baseline": {
+          "ppl": 7.155,
+          "delta_vs_baseline_pct": 0.0,
+          "compression_ratio": 1.0,
+          "eval_time_s": 6.68
+        },
+        "int8_only": {
+          "ppl": 7.3784,
+          "delta_vs_baseline_pct": 3.12,
+          "compression_ratio": 4.0,
+          "eval_time_s": 8.37
+        },
+        "int8_head_reduce": {
+          "ppl": 7.6198,
+          "delta_vs_baseline_pct": 6.5,
+          "compression_ratio": 5.0,
+          "eval_time_s": 8.45
+        },
+        "moderate_10x": {
+          "ppl": 10.36,
+          "delta_vs_baseline_pct": 44.79,
+          "compression_ratio": 10.0,
+          "eval_time_s": 9.13
+        },
+        "standard_20x": {
+          "ppl": 11.2427,
+          "delta_vs_baseline_pct": 57.13,
+          "compression_ratio": 20.0,
+          "eval_time_s": 9.14
+        },
+        "aggressive_40x": {
+          "ppl": 11.3041,
+          "delta_vs_baseline_pct": 57.99,
+          "compression_ratio": 40.0,
+          "eval_time_s": 9.14
+        }
+      },
+      "gsm8k": {
+        "baseline": {
+          "accuracy": 0.02,
+          "correct": 1,
+          "total": 50,
+          "delta_vs_baseline_pct": 0.0,
+          "compression_ratio": 1.0,
+          "eval_time_s": 301.25
+        },
+        "int8_only": {
+          "accuracy": 0.1,
+          "correct": 5,
+          "total": 50,
+          "delta_vs_baseline_pct": 400.0,
+          "compression_ratio": 4.0,
+          "eval_time_s": 445.39
+        },
+        "standard_20x": {
+          "accuracy": 0.02,
+          "correct": 1,
+          "total": 50,
+          "delta_vs_baseline_pct": 0.0,
+          "compression_ratio": 20.0,
+          "eval_time_s": 381.77
+        },
+        "aggressive_40x": {
+          "accuracy": 0.0,
+          "correct": 0,
+          "total": 50,
+          "delta_vs_baseline_pct": -100.0,
+          "compression_ratio": 40.0,
+          "eval_time_s": 437.76
+        }
+      },
+      "errors": [],
+      "n_params_M": 7248.0,
+      "dtype": "torch.bfloat16"
+    },
+    "Qwen/Qwen2.5-7B": {
+      "model": "Qwen/Qwen2.5-7B",
+      "perplexity": {
+        "baseline": {
+          "ppl": 7.7671,
+          "delta_vs_baseline_pct": 0.0,
+          "compression_ratio": 1.0,
+          "eval_time_s": 6.31
+        },
+        "int8_only": {
+          "ppl": 10.3545,
+          "delta_vs_baseline_pct": 33.31,
+          "compression_ratio": 4.0,
+          "eval_time_s": 7.5
+        },
+        "int8_head_reduce": {
+          "ppl": 10.994,
+          "delta_vs_baseline_pct": 41.55,
+          "compression_ratio": 5.0,
+          "eval_time_s": 7.55
+        },
+        "moderate_10x": {
+          "ppl": 19.2037,
+          "delta_vs_baseline_pct": 147.25,
+          "compression_ratio": 10.0,
+          "eval_time_s": 8.13
+        },
+        "standard_20x": {
+          "ppl": 20.9734,
+          "delta_vs_baseline_pct": 170.03,
+          "compression_ratio": 20.0,
+          "eval_time_s": 8.12
+        },
+        "aggressive_40x": {
+          "ppl": 36.0655,
+          "delta_vs_baseline_pct": 364.34,
+          "compression_ratio": 40.0,
+          "eval_time_s": 8.14
+        }
+      },
+      "gsm8k": {
+        "baseline": {
+          "accuracy": 0.1,
+          "correct": 5,
+          "total": 50,
+          "delta_vs_baseline_pct": 0.0,
+          "compression_ratio": 1.0,
+          "eval_time_s": 295.95
+        },
+        "int8_only": {
+          "accuracy": 0.04,
+          "correct": 2,
+          "total": 50,
+          "delta_vs_baseline_pct": -60.0,
+          "compression_ratio": 4.0,
+          "eval_time_s": 363.87
+        },
+        "standard_20x": {
+          "accuracy": 0.02,
+          "correct": 1,
+          "total": 50,
+          "delta_vs_baseline_pct": -80.0,
+          "compression_ratio": 20.0,
+          "eval_time_s": 341.95
+        },
+        "aggressive_40x": {
+          "accuracy": 0.0,
+          "correct": 0,
+          "total": 50,
+          "delta_vs_baseline_pct": -100.0,
+          "compression_ratio": 40.0,
+          "eval_time_s": 216.57
+        }
+      },
+      "errors": [],
+      "n_params_M": 7615.6,
+      "dtype": "torch.bfloat16"
+    }
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "distilgpt2": {
+    "model": "distilgpt2",
+    "device": "mps",
+    "n_problems": 50,
+    "configs": [
+      {
+        "config_name": "baseline",
+        "compression_ratio": 1.0,
+        "accuracy": 0.04,
+        "correct": 2,
+        "total": 50,
+        "delta_vs_baseline_pct": 0.0,
+        "eval_time_s": 17.89
+      },
+      {
+        "config_name": "int8_only",
+        "compression_ratio": 4.0,
+        "accuracy": 0.0,
+        "correct": 0,
+        "total": 50,
+        "delta_vs_baseline_pct": -100.0,
+        "eval_time_s": 36.25
+      },
+      {
+        "config_name": "moderate_20x",
+        "compression_ratio": 20.0,
+        "accuracy": 0.0,
+        "correct": 0,
+        "total": 50,
+        "delta_vs_baseline_pct": -100.0,
+        "eval_time_s": 0.35
+      },
+      {
+        "config_name": "aggressive_40x",
+        "compression_ratio": 40.0,
+        "accuracy": 0.0,
+        "correct": 0,
+        "total": 50,
+        "delta_vs_baseline_pct": -100.0,
+        "eval_time_s": 0.33
+      }
+    ],
+    "timestamp": "2026-02-28T18:47:13.736211"
+  },
+  "gpt2": {
+    "model": "gpt2",
+    "device": "mps",
+    "n_problems": 50,
+    "configs": [
+      {
+        "config_name": "baseline",
+        "compression_ratio": 1.0,
+        "accuracy": 0.06,
+        "correct": 3,
+        "total": 50,
+        "delta_vs_baseline_pct": 0.0,
+        "eval_time_s": 27.23
+      },
+      {
+        "config_name": "int8_only",
+        "compression_ratio": 4.0,
+        "accuracy": 0.0,
+        "correct": 0,
+        "total": 50,
+        "delta_vs_baseline_pct": -100.0,
+        "eval_time_s": 41.14
+      },
+      {
+        "config_name": "moderate_20x",
+        "compression_ratio": 20.0,
+        "accuracy": 0.0,
+        "correct": 0,
+        "total": 50,
+        "delta_vs_baseline_pct": -100.0,
+        "eval_time_s": 0.47
+      },
+      {
+        "config_name": "aggressive_40x",
+        "compression_ratio": 40.0,
+        "accuracy": 0.0,
+        "correct": 0,
+        "total": 50,
+        "delta_vs_baseline_pct": -100.0,
+        "eval_time_s": 0.46
+      }
+    ],
+    "timestamp": "2026-02-28T18:48:09.435535"
+  }
+}

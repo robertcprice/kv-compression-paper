@@ -1,0 +1,38 @@
+{
+  "benchmark_info": {
+    "date": "2026-03-02",
+    "gpu": "NVIDIA RTX 4090 (24GB)",
+    "pytorch": "2.5.1+cu124",
+    "dataset": "WikiText-2 (50 texts, max 512 tokens)",
+    "note": "Current SOTA open source models tested with real inference"
+  },
+  "results": {
+    "Qwen/Qwen3-8B": {
+      "release_date": "2025-04",
+      "parameters": "8B",
+      "fp16_ppl": 18.8349,
+      "int8_ppl": 18.7909,
+      "ppl_change_pct": -0.23,
+      "fp16_mem_gb": 16.38,
+      "int8_mem_gb": 9.45,
+      "mem_saved_pct": 42.31,
+      "notes": "INT8 actually improved perplexity slightly - rare case"
+    },
+    "Qwen/Qwen3-4B": {
+      "release_date": "2025-04",
+      "parameters": "4B",
+      "fp16_ppl": 28.7995,
+      "int8_ppl": 28.9733,
+      "ppl_change_pct": 0.60,
+      "fp16_mem_gb": 8.05,
+      "int8_mem_gb": 4.44,
+      "mem_saved_pct": 44.84
+    }
+  },
+  "conclusions": {
+    "int8_viable": true,
+    "avg_ppl_cost": 0.19,
+    "avg_memory_saved": 43.58,
+    "recommendation": "INT8 quantization on current Qwen3 models is production-ready with <1% PPL cost and ~44% memory savings"
+  }
+}

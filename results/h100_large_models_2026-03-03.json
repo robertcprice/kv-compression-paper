@@ -1,0 +1,119 @@
+{
+  "benchmark_info": {
+    "gpu": "NVIDIA H100 NVL (94GB)",
+    "date": "2026-03-03",
+    "dataset": "WikiText-2 (50 texts, max 512 tokens)",
+    "compression_configs": [
+      "baseline",
+      "int8_4x",
+      "int8_heads_5x",
+      "int8_heads_tokens_10x",
+      "int8_heads_tokens_20x",
+      "int8_heads_tokens_40x"
+    ]
+  },
+  "models": [
+    {
+      "model_id": "Qwen/Qwen3-14B",
+      "model_size": "14B",
+      "configs": {
+        "baseline": {
+          "status": "success",
+          "perplexity": 17.56602532530037,
+          "memory_gb": 29.537160192
+        },
+        "int8_4x": {
+          "status": "success",
+          "perplexity": 17.733668744686735,
+          "memory_gb": 16.374352896
+        },
+        "int8_heads_5x": {
+          "status": "success",
+          "perplexity": 21.0730068015244,
+          "memory_gb": 16.376450048
+        },
+        "int8_heads_tokens_10x": {
+          "status": "success",
+          "perplexity": 37.995329809305495,
+          "memory_gb": 16.373828608
+        },
+        "int8_heads_tokens_20x": {
+          "status": "success",
+          "perplexity": 68.50683914805475,
+          "memory_gb": 16.372255744
+        },
+        "int8_heads_tokens_40x": {
+          "status": "success",
+          "perplexity": 112.09614794535084,
+          "memory_gb": 16.374877184
+        }
+      }
+    },
+    {
+      "model_id": "Qwen/Qwen3-32B",
+      "model_size": "32B",
+      "configs": {
+        "baseline": {
+          "status": "success",
+          "perplexity": 16.139630322051328,
+          "memory_gb": 65.55835904
+        },
+        "int8_4x": {
+          "status": "success",
+          "perplexity": 16.246367222009678,
+          "memory_gb": 34.38157312
+        },
+        "int8_heads_5x": {
+          "status": "success",
+          "perplexity": 19.204439723612666,
+          "memory_gb": 34.38157312
+        },
+        "int8_heads_tokens_10x": {
+          "status": "success",
+          "perplexity": 34.010003440882635,
+          "memory_gb": 34.380524544
+        },
+        "int8_heads_tokens_20x": {
+          "status": "success",
+          "perplexity": 60.22984011487003,
+          "memory_gb": 34.381048832
+        },
+        "int8_heads_tokens_40x": {
+          "status": "success",
+          "perplexity": 97.08535450518387,
+          "memory_gb": 34.381048832
+        }
+      }
+    },
+    {
+      "model_id": "Qwen/Qwen3.5-397B-A17B",
+      "model_size": "397B-MoE",
+      "configs": {
+        "baseline": {
+          "status": "load_error",
+          "error": "Data processing error: File Reconstruction Error: Internal Writer Error: Background writer channel c"
+        },
+        "int8_4x": {
+          "status": "load_error",
+          "error": "Data processing error: File Reconstruction Error: Internal Writer Error: Failed to send data: receiv"
+        },
+        "int8_heads_5x": {
+          "status": "load_error",
+          "error": "Data processing error: File Reconstruction Error: Internal Writer Error: Failed to send data: receiv"
+        },
+        "int8_heads_tokens_10x": {
+          "status": "load_error",
+          "error": "Data processing error: File Reconstruction Error: Internal Writer Error: Failed to send data: receiv"
+        },
+        "int8_heads_tokens_20x": {
+          "status": "load_error",
+          "error": "Data processing error: File Reconstruction Error: Internal Writer Error: Failed to send data: receiv"
+        },
+        "int8_heads_tokens_40x": {
+          "status": "load_error",
+          "error": "Data processing error: File Reconstruction Error: Internal Writer Error: Failed to send data: receiv"
+        }
+      }
+    }
+  ]
+}
